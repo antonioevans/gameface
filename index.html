@@ -80,14 +80,14 @@
         }
         
         .capture-area {
-            width: 100%;
+            width: 150px;
             height: 200px;
             background: #000;
             border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 20px;
+            margin: 0 auto 20px;
             overflow: hidden;
             position: relative;
         }
@@ -97,7 +97,14 @@
             font-size: 40px;
         }
         
-        video, #preview, #result-img {
+        video, #preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            background: #000;
+        }
+        
+        #result-img {
             width: 100%;
             height: 100%;
             object-fit: contain;
@@ -305,7 +312,11 @@
             
             try {
                 stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { width: { ideal: 1280 }, height: { ideal: 720 } } 
+                    video: { 
+                        width: { ideal: 720 }, 
+                        height: { ideal: 1280 },
+                        aspectRatio: { ideal: 9/16 }
+                    } 
                 });
                 video.srcObject = stream;
                 video.play();
@@ -352,9 +363,20 @@
                 return;
             }
             
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            context.drawImage(video, 0, 0);
+            // Force portrait orientation
+            const aspectRatio = video.videoHeight / video.videoWidth;
+            if (aspectRatio < 1) {
+                // If landscape, crop to portrait
+                canvas.width = video.videoHeight * 0.75;
+                canvas.height = video.videoHeight;
+                const offsetX = (video.videoWidth - canvas.width) / 2;
+                context.drawImage(video, offsetX, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+            } else {
+                // Already portrait
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                context.drawImage(video, 0, 0);
+            }
             
             currentImageBase64 = canvas.toDataURL('image/jpeg', 0.9);
             
