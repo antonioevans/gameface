@@ -80,7 +80,7 @@
         }
         
         .capture-area {
-            width: 150px;
+            width: 112px;
             height: 200px;
             background: #000;
             border-radius: 12px;
@@ -363,19 +363,25 @@
                 return;
             }
             
-            // Force portrait orientation
-            const aspectRatio = video.videoHeight / video.videoWidth;
-            if (aspectRatio < 1) {
-                // If landscape, crop to portrait
-                canvas.width = video.videoHeight * 0.75;
-                canvas.height = video.videoHeight;
-                const offsetX = (video.videoWidth - canvas.width) / 2;
-                context.drawImage(video, offsetX, 0, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+            // Force exact 9:16 portrait orientation
+            const targetAspectRatio = 9 / 16;
+            
+            // Set canvas to 9:16 ratio
+            canvas.width = 720;
+            canvas.height = 1280;
+            
+            const videoAspectRatio = video.videoWidth / video.videoHeight;
+            
+            if (videoAspectRatio > targetAspectRatio) {
+                // Video is wider than 9:16, crop sides
+                const targetWidth = video.videoHeight * targetAspectRatio;
+                const offsetX = (video.videoWidth - targetWidth) / 2;
+                context.drawImage(video, offsetX, 0, targetWidth, video.videoHeight, 0, 0, canvas.width, canvas.height);
             } else {
-                // Already portrait
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                context.drawImage(video, 0, 0);
+                // Video is taller than 9:16, crop top/bottom
+                const targetHeight = video.videoWidth / targetAspectRatio;
+                const offsetY = (video.videoHeight - targetHeight) / 2;
+                context.drawImage(video, 0, offsetY, video.videoWidth, targetHeight, 0, 0, canvas.width, canvas.height);
             }
             
             currentImageBase64 = canvas.toDataURL('image/jpeg', 0.9);
