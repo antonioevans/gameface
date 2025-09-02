@@ -155,8 +155,14 @@
             font-size: 12px;
             cursor: pointer;
             width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             outline: none;
+        }
+        
+        #sponsor {
+            background: rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+            margin-bottom: 15px;
         }
         
         select option {
@@ -255,6 +261,10 @@
                 </div>
                 <div class="capture-placeholder">✨</div>
             </div>
+            <select id="sponsor">
+                <option value="chase">Chase</option>
+                <option value="nascar">NASCAR</option>
+            </select>
             <select id="theme">
                 <option value="tennis">🎾 Tennis Player</option>
                 <option value="nascar">🏎️ NASCAR Driver</option>
@@ -383,6 +393,7 @@
             }
             
             const theme = document.getElementById('theme').value;
+            const sponsor = document.getElementById('sponsor').value;
             const loading = document.getElementById('loading');
             const resultImg = document.getElementById('result-img');
             const error = document.getElementById('error');
@@ -394,13 +405,15 @@
             resultColumn.querySelector('.capture-placeholder').style.display = 'none';
             error.innerHTML = '';
             
+            const sponsorText = sponsor === 'chase' ? 'Chase bank logo prominently displayed' : 'NASCAR logo prominently displayed';
+            
             const prompts = {
-                tennis: "A dashing, elegant tennis player exudes confidence on the court, clad in a pristine white shirt and matching shorts. Use the subject from the input photo as the athlete; preserve facial identity, skin tone, and hair. Professional outdoor hard court at golden hour. Photorealistic, sharp lens look.",
-                nascar: "A high-octane NASCAR pit-lane scene with the subject as a professional driver in a flame-resistant suit, standing beside a race car. Use the subject from the input photo; preserve facial identity. Bright midday pit lane. Photorealistic, dynamic contrast.",
-                wwe: "An electrifying pro-wrestling arena entrance with the subject as a superstar. The subject wears dramatic ring gear. Use the subject from the input photo; preserve facial identity. Stadium interior with lights. Cinematic lighting, photorealistic.",
-                rudolph_xmas: "A festive holiday portrait with twinkling lights and cozy evergreen backdrop. The subject wears a red-nose prop and antler headband with warm knit sweater. Use the subject from the input photo; preserve facial identity. Soft warm lighting, photorealistic.",
-                linkedin: "A polished corporate headshot suitable for LinkedIn. Neutral studio backdrop, flattering three-point lighting, crisp business attire. Use the subject from the input photo; preserve facial identity. Clean retouching, photorealistic.",
-                dating: "A flattering, natural dating-profile portrait during golden hour outdoors. Soft warm light, gentle background blur. Use the subject from the input photo; preserve facial identity. Photorealistic skin, candid lifestyle vibe."
+                tennis: `A dashing, elegant tennis player exudes confidence on the court, clad in a pristine white shirt and matching shorts. ${sponsorText} in the background or on clothing. Use the subject from the input photo as the athlete; preserve facial identity, skin tone, and hair. Professional outdoor hard court at golden hour. Photorealistic, sharp lens look.`,
+                nascar: `A high-octane NASCAR pit-lane scene with the subject as a professional driver in a flame-resistant suit, standing beside a race car. ${sponsorText} on the race car and suit. Use the subject from the input photo; preserve facial identity. Bright midday pit lane. Photorealistic, dynamic contrast.`,
+                wwe: `An electrifying pro-wrestling arena entrance with the subject as a superstar. The subject wears dramatic ring gear. ${sponsorText} on the ring turnbuckle or entrance ramp. Use the subject from the input photo; preserve facial identity. Stadium interior with lights. Cinematic lighting, photorealistic.`,
+                rudolph_xmas: `A festive holiday portrait with twinkling lights and cozy evergreen backdrop. ${sponsorText} on a holiday gift box or banner. The subject wears a red-nose prop and antler headband with warm knit sweater. Use the subject from the input photo; preserve facial identity. Soft warm lighting, photorealistic.`,
+                linkedin: `A polished corporate headshot suitable for LinkedIn. ${sponsorText} subtly placed on the wall behind. Neutral studio backdrop, flattering three-point lighting, crisp business attire. Use the subject from the input photo; preserve facial identity. Clean retouching, photorealistic.`,
+                dating: `A flattering, natural dating-profile portrait during golden hour outdoors. ${sponsorText} on a casual t-shirt or cap worn naturally. Soft warm light, gentle background blur. Use the subject from the input photo; preserve facial identity. Photorealistic skin, candid lifestyle vibe.`
             };
             
             try {
