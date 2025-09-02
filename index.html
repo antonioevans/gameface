@@ -405,16 +405,29 @@
             resultColumn.querySelector('.capture-placeholder').style.display = 'none';
             error.innerHTML = '';
             
+            // Reference images for tennis courts
+            const chaseCourtRef = 'https://i.imgur.com/EXAMPLE.jpg'; // You'll need to upload the Chase court image somewhere
+            
             const sponsorText = sponsor === 'chase' ? 'Chase bank logo prominently displayed' : 'NASCAR logo prominently displayed';
             
             const prompts = {
-                tennis: `A dashing, elegant tennis player exudes confidence on the court, clad in a pristine white shirt and matching shorts. ${sponsorText} in the background or on clothing. Use the subject from the input photo as the athlete; preserve facial identity, skin tone, and hair. Professional outdoor hard court at golden hour. Photorealistic, sharp lens look.`,
+                tennis: sponsor === 'chase' 
+                    ? `A professional tennis player on a blue hard court with Chase branding prominently displayed on court signage and walls, similar to US Open Arthur Ashe Stadium. The subject from the input photo is the athlete wearing white tennis attire. Preserve facial identity, skin tone, and hair. Stadium seating visible in background with Chase logos on blue barriers. Professional tennis court lighting. Photorealistic, broadcast quality.`
+                    : `A dashing, elegant tennis player exudes confidence on the court, clad in a pristine white shirt and matching shorts. ${sponsorText} in the background or on clothing. Use the subject from the input photo as the athlete; preserve facial identity, skin tone, and hair. Professional outdoor hard court at golden hour. Photorealistic, sharp lens look.`,
                 nascar: `A high-octane NASCAR pit-lane scene with the subject as a professional driver in a flame-resistant suit, standing beside a race car. ${sponsorText} on the race car and suit. Use the subject from the input photo; preserve facial identity. Bright midday pit lane. Photorealistic, dynamic contrast.`,
                 wwe: `An electrifying pro-wrestling arena entrance with the subject as a superstar. The subject wears dramatic ring gear. ${sponsorText} on the ring turnbuckle or entrance ramp. Use the subject from the input photo; preserve facial identity. Stadium interior with lights. Cinematic lighting, photorealistic.`,
                 rudolph_xmas: `A festive holiday portrait with twinkling lights and cozy evergreen backdrop. ${sponsorText} on a holiday gift box or banner. The subject wears a red-nose prop and antler headband with warm knit sweater. Use the subject from the input photo; preserve facial identity. Soft warm lighting, photorealistic.`,
                 linkedin: `A polished corporate headshot suitable for LinkedIn. ${sponsorText} subtly placed on the wall behind. Neutral studio backdrop, flattering three-point lighting, crisp business attire. Use the subject from the input photo; preserve facial identity. Clean retouching, photorealistic.`,
                 dating: `A flattering, natural dating-profile portrait during golden hour outdoors. ${sponsorText} on a casual t-shirt or cap worn naturally. Soft warm light, gentle background blur. Use the subject from the input photo; preserve facial identity. Photorealistic skin, candid lifestyle vibe.`
             };
+            
+            // Build image URLs array - add reference image for tennis + Chase combo
+            const imageUrls = [currentImageBase64];
+            if (theme === 'tennis' && sponsor === 'chase') {
+                // For Chase tennis, include the court reference image
+                // Note: You need to host the Chase court image somewhere accessible
+                // imageUrls.push(chaseCourtRef);
+            }
             
             try {
                 const response = await fetch('https://fal.run/fal-ai/nano-banana/edit', {
@@ -425,7 +438,7 @@
                     },
                     body: JSON.stringify({
                         prompt: prompts[theme],
-                        image_urls: [currentImageBase64],
+                        image_urls: imageUrls,
                         num_images: 1,
                         output_format: 'jpeg'
                     })
